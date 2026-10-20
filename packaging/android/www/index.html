@@ -1,0 +1,6 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Open Founder</title>
+<style>body{background:#0b0614;color:#eee;font-family:system-ui;padding:24px}input{width:100%;padding:12px;border-radius:8px;border:1px solid #3b2566;background:#160d29;color:#fff;margin:12px 0;box-sizing:border-box}button{width:100%;background:linear-gradient(90deg,#8b5cf6,#06b6d4);border:0;color:#fff;padding:12px;border-radius:8px}</style></head>
+<body><h2>Open Founder</h2><p>Enter the URL of your Open Founder server (e.g. http://192.168.1.10:3000 on your LAN, or your cloud domain).</p>
+<input id="u" placeholder="https://founder.example.com"><button id="b">Connect</button>
+<script>const k='of_server',s=localStorage.getItem(k);if(s&&!location.hash.includes('setup'))location.href=s;
+document.getElementById('u').value=s||'';document.getElementById('b').onclick=()=>{const v=document.getElementById('u').value.trim();if(v){localStorage.setItem(k,v);location.href=v}}</script></body></html>

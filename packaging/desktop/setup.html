@@ -1,0 +1,5 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Open Founder</title>
+<style>body{background:#0b0614;color:#eee;font-family:system-ui;display:grid;place-items:center;height:100vh;margin:0}.c{max-width:460px;padding:32px;border-radius:16px;background:#160d29;border:1px solid #3b2566}input{width:100%;padding:10px;border-radius:8px;border:1px solid #3b2566;background:#0b0614;color:#fff;margin:12px 0}button{background:linear-gradient(90deg,#8b5cf6,#06b6d4);border:0;color:#fff;padding:10px 18px;border-radius:8px;cursor:pointer}code{color:#67e8f9}</style></head>
+<body><div class="c"><h2>Connect to your Open Founder server</h2><p>Couldn't reach the server. Start one with<br><code>curl -fsSL https://codesbyfebin.github.io/Open-Founder/install.sh | sh</code><br>or enter your server URL:</p>
+<input id="u"><button onclick="location.href='openfounder://set?url='+encodeURIComponent(document.getElementById('u').value)">Connect</button></div>
+<script>document.getElementById('u').value=new URLSearchParams(location.search).get('url')||'http://localhost:3000'</script></body></html>

@@ -1,0 +1,2 @@
+{ "appId": "com.openfounder.app", "appName": "Open Founder", "webDir": "www",
+  "server": { "androidScheme": "https", "cleartext": true, "allowNavigation": ["*"] } }

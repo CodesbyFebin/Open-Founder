@@ -1,0 +1,18 @@
+{
+  "name": "open-founder-desktop",
+  "version": "0.1.0",
+  "description": "Open Founder desktop shell",
+  "main": "main.js",
+  "author": { "name": "CodesbyFebin", "email": "codesbyfebin@users.noreply.github.com" },
+  "homepage": "https://codesbyfebin.github.io/Open-Founder/",
+  "license": "MIT",
+  "scripts": { "start": "electron .", "dist:win": "electron-builder --win nsis --publish never", "dist:linux": "electron-builder --linux deb --publish never" },
+  "devDependencies": { "electron": "^31.7.7", "electron-builder": "^25.1.8" },
+  "build": {
+    "appId": "com.openfounder.app",
+    "productName": "Open Founder",
+    "files": ["main.js", "setup.html"],
+    "win": { "target": "nsis", "artifactName": "OpenFounder-Setup.exe" },
+    "linux": { "target": "deb", "category": "Office", "maintainer": "CodesbyFebin <codesbyfebin@users.noreply.github.com>", "artifactName": "open-founder_amd64.deb" }
+  }
+}
