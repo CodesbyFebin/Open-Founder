@@ -1,0 +1,41 @@
+{
+  "name": "@open-founder/core",
+  "version": "0.1.0",
+  "license": "MIT",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./money": {
+      "types": "./dist/money.d.ts",
+      "default": "./dist/money.js"
+    },
+    "./gst": {
+      "types": "./dist/gst.d.ts",
+      "default": "./dist/gst.js"
+    },
+    "./upi": {
+      "types": "./dist/upi.d.ts",
+      "default": "./dist/upi.js"
+    },
+    "./atlas": {
+      "types": "./dist/atlas.d.ts",
+      "default": "./dist/atlas.js"
+    },
+    "./security": {
+      "types": "./dist/security.d.ts",
+      "default": "./dist/security.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json"
+  },
+  "dependencies": {}
+}

@@ -1,0 +1,31 @@
+{
+  "name": "open-founder",
+  "version": "0.1.0",
+  "private": true,
+  "license": "MIT",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "build:packages": "npm run build -w @open-founder/core -w @open-founder/payment-adapters -w @open-founder/messaging-adapters -w @open-founder/ai -w @open-founder/sdk -w @open-founder/gst-mcp",
+    "build": "npm run db:generate && npm run build:packages && npm run build -w @open-founder/web",
+    "typecheck": "npm run db:generate && npm run build:packages && npm run typecheck -w @open-founder/web",
+    "dev": "npm run dev -w @open-founder/web",
+    "test": "node --test packages/core/dist/*.test.js",
+    "db:generate": "prisma generate",
+    "db:validate": "prisma validate",
+    "db:push": "prisma db push",
+    "sdk:pack": "npm run build -w @open-founder/sdk && npm pack -w @open-founder/sdk --pack-destination apps/web/public/downloads",
+    "mcp:gst": "node packages/gst-mcp/dist/server.js",
+    "db:seed": "node prisma/seed.mjs"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.16.0"
+  },
+  "devDependencies": {
+    "prisma": "^6.16.0",
+    "typescript": "^5.6.3",
+    "@types/node": "^22.7.0"
+  }
+}
