@@ -1,0 +1,31 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-founder}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: ${POSTGRES_DB:-open_founder}
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      retries: 10
+  web:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-founder}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-open_founder}?schema=public
+    ports: ["3000:3000"]
+    depends_on:
+      postgres: { condition: service_healthy }
+  # Optional self-hosted WhatsApp HTTP API. Enable with: docker compose --profile whatsapp up
+  waha:
+    image: devlikeapro/waha:latest
+    profiles: ["whatsapp"]
+    restart: unless-stopped
+    environment:
+      WAHA_API_KEY: ${WAHA_API_KEY:-}
+volumes:
+  pgdata:

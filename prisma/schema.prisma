@@ -1,0 +1,251 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  OWNER
+  MANAGER
+  CASHIER
+  STAFF
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  EXPIRED
+  FAILED
+}
+
+enum OrderChannel {
+  ONLINE
+  POS
+}
+
+enum PaymentMethod {
+  UPI
+  CASH
+  CARD
+}
+
+model Business {
+  id         String   @id @default(cuid())
+  name       String
+  gstin      String?
+  stateCode  String   @default("32")
+  upiVpa     String?
+  locale     String   @default("en")
+  createdAt  DateTime @default(now())
+  users      User[]
+  apiKeys    ApiKey[]
+  products   Product[]
+  customers  Customer[]
+  orders     Order[]
+  invoices   Invoice[]
+  expenses   Expense[]
+  bookings   Booking[]
+  staff      Staff[]
+  leads      Lead[]
+  cards      BusinessCard[]
+  ledger     LedgerEntry[]
+  tasks      AtlasTaskState[]
+}
+
+model User {
+  id           String   @id @default(cuid())
+  businessId   String
+  business     Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  email        String   @unique
+  passwordHash String
+  role         Role     @default(OWNER)
+  createdAt    DateTime @default(now())
+}
+
+model ApiKey {
+  id         String    @id @default(cuid())
+  businessId String
+  business   Business  @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  name       String
+  keyHash    String    @unique
+  createdAt  DateTime  @default(now())
+  revokedAt  DateTime?
+}
+
+model Product {
+  id         String      @id @default(cuid())
+  businessId String
+  business   Business    @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  name       String
+  sku        String
+  hsnSac     String?
+  pricePaise BigInt
+  gstRateBp  Int         @default(1800)
+  stock      Int         @default(0)
+  reorderAt  Int         @default(5)
+  published  Boolean     @default(true)
+  orderItems OrderItem[]
+  @@unique([businessId, sku])
+}
+
+model Customer {
+  id         String   @id @default(cuid())
+  businessId String
+  business   Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  name       String?
+  mobile     String
+  gstin      String?
+  stateCode  String?
+  orders     Order[]
+  @@unique([businessId, mobile])
+}
+
+model Order {
+  id           String         @id @default(cuid())
+  businessId   String
+  business     Business       @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  customerId   String?
+  customer     Customer?      @relation(fields: [customerId], references: [id])
+  channel      OrderChannel   @default(ONLINE)
+  method       PaymentMethod  @default(UPI)
+  status       PaymentStatus  @default(PENDING)
+  totalPaise   BigInt
+  createdAt    DateTime       @default(now())
+  items        OrderItem[]
+  payment      PaymentSession?
+  invoice      Invoice?
+}
+
+model OrderItem {
+  id             String  @id @default(cuid())
+  orderId        String
+  order          Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId      String
+  product        Product @relation(fields: [productId], references: [id])
+  quantity       Int
+  unitPricePaise BigInt
+  gstRateBp      Int
+}
+
+model PaymentSession {
+  id          String        @id @default(cuid())
+  orderId     String        @unique
+  order       Order         @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  provider    String
+  sessionRef  String        @unique
+  amountPaise BigInt
+  upiUri      String?
+  status      PaymentStatus @default(PENDING)
+  utr         String?       @unique // unique => UTR replay protection at DB level
+  source      String?
+  expiresAt   DateTime
+  paidAt      DateTime?
+  createdAt   DateTime      @default(now())
+}
+
+model Invoice {
+  id            String   @id @default(cuid())
+  businessId    String
+  business      Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  orderId       String?  @unique
+  order         Order?   @relation(fields: [orderId], references: [id])
+  number        String
+  placeOfSupply String
+  taxablePaise  BigInt
+  cgstPaise     BigInt
+  sgstPaise     BigInt
+  igstPaise     BigInt
+  totalPaise    BigInt
+  linesJson     Json
+  issuedAt      DateTime @default(now())
+  @@unique([businessId, number])
+}
+
+model Expense {
+  id          String   @id @default(cuid())
+  businessId  String
+  business    Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  description String
+  category    String
+  amountPaise BigInt
+  gstPaise    BigInt   @default(0)
+  vendorGstin String?
+  spentAt     DateTime @default(now())
+}
+
+model LedgerEntry {
+  id          String   @id @default(cuid())
+  businessId  String
+  business    Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  account     String
+  debitPaise  BigInt   @default(0)
+  creditPaise BigInt   @default(0)
+  memo        String?
+  refType     String?
+  refId       String?
+  postedAt    DateTime @default(now())
+}
+
+model Booking {
+  id             String   @id @default(cuid())
+  businessId     String
+  business       Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  customerName   String
+  customerMobile String
+  service        String
+  startsAt       DateTime
+  staffId        String?
+  staff          Staff?   @relation(fields: [staffId], references: [id])
+  status         String   @default("CONFIRMED")
+}
+
+model Staff {
+  id         String    @id @default(cuid())
+  businessId String
+  business   Business  @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  name       String
+  mobile     String?
+  role       Role      @default(STAFF)
+  active     Boolean   @default(true)
+  bookings   Booking[]
+}
+
+model Lead {
+  id         String   @id @default(cuid())
+  businessId String
+  business   Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  name       String
+  mobile     String?
+  stage      String   @default("NEW")
+  notes      String?
+  createdAt  DateTime @default(now())
+}
+
+model BusinessCard {
+  id         String   @id @default(cuid())
+  businessId String
+  business   Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  slug       String   @unique
+  name       String
+  title      String?
+  phone      String?
+  email      String?
+  website    String?
+}
+
+model AtlasTaskState {
+  id         String   @id @default(cuid())
+  businessId String
+  business   Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  taskId     String
+  done       Boolean  @default(false)
+  @@unique([businessId, taskId])
+}
+
+model UsedUtr {
+  utr       String   @id
+  createdAt DateTime @default(now())
+}

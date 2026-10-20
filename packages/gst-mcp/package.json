@@ -1,0 +1,3 @@
+{ "name": "@open-founder/gst-mcp", "version": "0.1.0", "license": "MIT", "type": "module", "main": "dist/index.js", "bin": { "open-founder-gst-mcp": "dist/server.js" }, "types": "dist/index.d.ts",
+  "exports": { ".": { "types": "./dist/index.d.ts", "default": "./dist/index.js" } }, "files": ["dist"],
+  "scripts": { "build": "tsc -p tsconfig.json" }, "dependencies": { "@open-founder/core": "0.1.0", "@modelcontextprotocol/sdk": "^1.20.0", "zod": "^3.25.0" } }
