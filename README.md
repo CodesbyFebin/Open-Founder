@@ -1,4 +1,5 @@
 # Open Founder
+<img width="1672" height="941" alt="image" src="https://github.com/user-attachments/assets/7b1e3869-68e3-43c8-923e-72260d1a0c62" />
 
 Open-source (MIT), self-hostable business OS for founders in India: **Founder Atlas** checklists, store builder, zero-fee **direct UPI checkout** (dynamic QR), **POS**, **GST billing** (CGST/SGST vs IGST, integer paise math), expenses & inventory, bookings, staff, CRM, digital business card, a pluggable **AI assistant**, a **GST MCP server**, and a typed **backend SDK**. Works offline (PWA + IndexedDB outbox sync). UI in English, Hindi, Malayalam, Tamil.
 
@@ -16,6 +17,9 @@ packages/gst-mcp            MCP stdio server: compute_gst_invoice, validate_gsti
 prisma/schema.prisma        Single database schema
 apps/web/public/prototype.html  Original single-file interactive prototype (fixed)
 ```
+<img width="1586" height="992" alt="image" src="https://github.com/user-attachments/assets/e9d4b81c-3026-4011-836a-7cbeb18dbe0a" />
+
+
 
 ## Quick start (Docker)
 ```bash
